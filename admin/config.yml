@@ -7,8 +7,9 @@
 
 backend:
   name: github
-  repo: ВАШ-АККАУНТ/ВАШ-РЕПОЗИТОРИЙ   # ← подставить своё
+  repo: drobik832-sudo/RUFOUS
   branch: main
+  base_url: https://rufoos-cms-auth.<ПОДДОМЕН>.workers.dev   # ← подставить адрес воркера
 
 # Загрузка фотографий: файлы попадают в photos/, в тексте ссылаемся как photos/имя.jpg
 media_folder: photos
