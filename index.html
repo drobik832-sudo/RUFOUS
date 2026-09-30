@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Загрузка…</title>
+<meta name="description" content="">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="head" id="head">
+  <a class="mark" href="#"><span id="brand"></span><span id="brandAccent"></span></a>
+  <nav class="nav" id="nav"></nav>
+  <button class="burger" id="burger" aria-label="Меню"><i></i><i></i><i></i></button>
+</header>
+
+<main id="app"><noscript>
+  <p style="padding:120px 24px;text-align:center">Для работы сайта нужен включённый JavaScript.</p>
+</noscript></main>
+
+<footer class="foot"><div class="wrap" id="foot"></div></footer>
+
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
+  ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+function render(d) {
+  document.title = d.meta.title;
+  document.querySelector('meta[name="description"]').content = d.meta.description;
+
+  document.getElementById('brand').textContent = d.brand.name;
+  document.getElementById('brandAccent').textContent = d.brand.accent;
+  document.getElementById('nav').innerHTML =
+    d.nav.map(i => `<a href="${esc(i.href)}">${esc(i.label)}</a>`).join('');
+
+  const strip = (d.marquee || []).map(m => m.item ?? m).filter(Boolean);
+
+  const clients = d.clients.map(c => `
+    <a class="card" href="${esc(c.href)}"><h3>${esc(c.title)}</h3>
+      <p>${esc(c.desc)}</p><b>Подробнее →</b></a>`).join('');
+
+  const svc = d.services.map(s => `
+    <article class="svc rv">
+      <div class="shot"><img src="${esc(s.image)}" alt="${esc(s.title)}"></div>
+      <div><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p></div>
+    </article>`).join('');
+
+  const proj = d.projects.map(p => `
+    <figure class="proj"><img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">
+      <figcaption>${esc(p.title)}</figcaption></figure>`).join('');
+
+  const rev = d.reviews.map(r => `
+    <blockquote class="quote"><p>${esc(r.text)}</p><cite>${esc(r.title)}</cite></blockquote>`).join('');
+
+  const soc = (d.contact.socials || []).map(s =>
+    `<a href="${esc(s.href)}">${esc(s.label)}</a>`).join('');
+
+  document.getElementById('app').innerHTML = `
+  <section class="hero">
+    <img src="${esc(d.hero.image)}" alt="">
+    <div><h1>${esc(d.hero.titleBefore)} <em>${esc(d.hero.titleAccent)}</em><br>${esc(d.hero.titleAfter)}</h1>
+      <p>${esc(d.hero.text)}</p></div>
+    <div class="scroll">${esc(d.hero.scrollHint)}</div>
+  </section>
+
+  <section class="clients" id="clients"><div class="wrap">
+    <p class="eyebrow rv">${esc(d.clientsHead.eyebrow)}</p>
+    <h2 class="title rv">${esc(d.clientsHead.title)}</h2>
+    <div class="cards rv">${clients}</div>
+  </div></section>
+
+  ${strip.length ? `<div class="strip"><ul>${
+    [...strip, ...strip].map(m => `<li>${esc(m)}</li>`).join('')}</ul></div>` : ''}
+
+  <section id="work"><div class="wrap">
+    <p class="eyebrow rv">${esc(d.workHead.eyebrow)}</p>
+    <h2 class="title rv">${esc(d.workHead.title)}</h2>
+    <p class="lede rv">${esc(d.workHead.text)}</p>
+    <div style="margin-top:clamp(50px,8vw,90px)">${svc}</div>
+  </div></section>
+
+  <section class="projects" id="projects"><div class="wrap">
+    <p class="eyebrow rv">${esc(d.projectsHead.eyebrow)}</p>
+    <h2 class="title rv">${esc(d.projectsHead.title)}</h2>
+    <div class="grid rv">${proj}</div>
+  </div></section>
+
+  <section id="reviews"><div class="wrap">
+    <p class="eyebrow rv">${esc(d.reviewsHead.eyebrow)}</p>
+    <h2 class="title rv">${esc(d.reviewsHead.title)}</h2>
+    <div class="quotes rv">${rev}</div>
+  </div></section>
+
+  <div class="band rv"><img src="${esc(d.band.image)}" alt=""></div>
+
+  <section class="talk" id="contact"><div class="wrap">
+    <p class="eyebrow rv">${esc(d.contact.eyebrow)}</p>
+    <h2 class="title rv" style="margin-inline:auto">${esc(d.contact.title)}</h2>
+    <p class="lede rv">${esc(d.contact.text)}</p>
+    <a class="btn rv" href="mailto:${esc(d.contact.email)}">${esc(d.contact.email)}</a>
+    <div class="social rv">${soc}</div>
+  </div></section>`;
+
+  document.getElementById('foot').innerHTML =
+    `<span>${esc(d.footer.copyright)}</span><span>${esc(d.footer.company)}</span>` +
+    (d.footer.links || []).map(l => `<span><a href="${esc(l.href)}">${esc(l.label)}</a></span>`).join('');
+
+  reveal();
+}
+
+function reveal() {
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }), { threshold: .12, rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+}
+
+const head = document.getElementById('head');
+addEventListener('scroll', () => head.classList.toggle('solid', scrollY > 40));
+const burger = document.getElementById('burger'), nav = document.getElementById('nav');
+burger.onclick = () => { burger.classList.toggle('on'); nav.classList.toggle('on'); };
+nav.onclick = e => { if (e.target.tagName === 'A') { burger.classList.remove('on'); nav.classList.remove('on'); } };
+
+fetch('content/settings.json')
+  .then(r => r.ok ? r.json() : Promise.reject(r.status))
+  .then(render)
+  .catch(e => {
+    document.getElementById('app').innerHTML =
+      `<p style="padding:120px 24px;text-align:center;max-width:52ch;margin:auto">
+        Не удалось загрузить <code>content/settings.json</code> (код ${e}).<br>
+        Если сайт открыт двойным кликом — нужен локальный сервер: <code>./serve.sh start</code>.
+       </p>`;
+  });
+</script>
+</body>
+</html>

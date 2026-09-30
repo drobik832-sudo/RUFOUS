@@ -1,0 +1,153 @@
+# Decap CMS — конструктор сайта.
+# Когда заказчик закончит редактирование, папку admin можно удалить — доступ закроется.
+# Всё содержимое сайта живёт в ОДНОМ файле content/settings.json.
+# Так сделано специально: сайт собирается без сборки и без бэкенда,
+# поэтому он не может перечислять файлы в папке — при добавлении проекта
+# новый файл просто не попал бы на страницу.
+
+backend:
+  name: github
+  repo: ВАШ-АККАУНТ/ВАШ-РЕПОЗИТОРИЙ   # ← подставить своё
+  branch: main
+
+# Загрузка фотографий: файлы попадают в photos/, в тексте ссылаемся как photos/имя.jpg
+media_folder: photos
+public_folder: photos
+
+locale: ru
+
+collections:
+  - name: settings
+    label: Содержимое сайта
+    files:
+      - name: settings
+        label: Всё содержимое
+        file: content/settings.json
+        format: json
+        fields:
+
+          - label: Шапка и имя
+            name: brand
+            widget: object
+            fields:
+              - { label: Имя, name: name, widget: string }
+              - { label: Знак после имени (точка), name: accent, widget: string }
+
+          - label: Заголовок вкладки и описание
+            name: meta
+            widget: object
+            fields:
+              - { label: Заголовок вкладки браузера, name: title, widget: string }
+              - { label: Описание для поисковиков, name: description, widget: text }
+
+          - label: Меню
+            name: nav
+            widget: list
+            fields:
+              - { label: Название пункта, name: label, widget: string }
+              - { label: Ссылка, name: href, widget: string }
+
+          - label: Первый экран
+            name: hero
+            widget: object
+            fields:
+              - { label: Фоновая фотография, name: image, widget: image }
+              - { label: Начало заголовка, name: titleBefore, widget: string }
+              - { label: Имя (выделено цветом), name: titleAccent, widget: string }
+              - { label: Конец заголовка, name: titleAfter, widget: string }
+              - { label: Подпись под заголовком, name: text, widget: text }
+              - { label: Подсказка внизу экрана, name: scrollHint, widget: string }
+
+          - label: Бегущая строка брендов
+            name: marquee
+            widget: list
+            fields:
+              - { label: Название бренда, name: item, widget: string }
+            hint: Слово повторяется в списке намеренно — так прокрутка идёт без щелчков. Меняй только верхний блок.
+
+          - label: Клиенты — заголовки раздела
+            name: clientsHead
+            widget: object
+            fields:
+              - { label: Надзаголовок, name: eyebrow, widget: string }
+              - { label: Заголовок, name: title, widget: string }
+
+          - label: Клиенты
+            name: clients
+            widget: list
+            fields:
+              - { label: Название клиента, name: title, widget: string }
+              - { label: Описание проекта, name: desc, widget: text }
+              - { label: Ссылка «Подробнее», name: href, widget: string }
+
+          - label: Что я делаю — заголовки и текст
+            name: workHead
+            widget: object
+            fields:
+              - { label: Надзаголовок, name: eyebrow, widget: string }
+              - { label: Заголовок, name: title, widget: string }
+              - { label: Текст о себе, name: text, widget: text }
+
+          - label: Блоки услуг
+            name: services
+            widget: list
+            fields:
+              - { label: Заголовок блока, name: title, widget: string }
+              - { label: Текст, name: text, widget: text }
+              - { label: Фотография, name: image, widget: image }
+
+          - label: Портфолио — заголовки раздела
+            name: projectsHead
+            widget: object
+            fields:
+              - { label: Надзаголовок, name: eyebrow, widget: string }
+              - { label: Заголовок, name: title, widget: string }
+
+          - label: Проекты
+            name: projects
+            widget: list
+            fields:
+              - { label: Название проекта, name: title, widget: string }
+              - { label: Фотография, name: image, widget: image }
+
+          - label: Отзывы — заголовки раздела
+            name: reviewsHead
+            widget: object
+            fields:
+              - { label: Надзаголовок, name: eyebrow, widget: string }
+              - { label: Заголовок, name: title, widget: string }
+
+          - label: Отзывы
+            name: reviews
+            widget: list
+            fields:
+              - { label: Автор (имя, компания), name: title, widget: string }
+              - { label: Текст отзыва, name: text, widget: text }
+
+          - label: Широкая фотография между блоками
+            name: band
+            widget: object
+            fields:
+              - { label: Фотография, name: image, widget: image }
+
+          - label: Контакты
+            name: contact
+            widget: object
+            fields:
+              - { label: Надзаголовок, name: eyebrow, widget: string }
+              - { label: Заголовок, name: title, widget: string }
+              - { label: Текст, name: text, widget: text }
+              - { label: Почта (она же кнопка), name: email, widget: string }
+              - { label: Ссылки, name: socials, widget: list, fields: [
+                  { label: Подпись, name: label, widget: string },
+                  { label: Адрес, name: href, widget: string } ] }
+
+          - label: Подвал
+            name: footer
+            widget: object
+            fields:
+              - { label: Копирайт, name: copyright, widget: string }
+              - { label: Название студии, name: company, widget: string }
+              - { label: Ссылки, name: links, widget: list, fields: [
+                  { label: Подпись, name: label, widget: string },
+                  { label: Адрес, name: href, widget: string } ] }
